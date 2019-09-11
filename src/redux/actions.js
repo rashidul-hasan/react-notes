@@ -1,0 +1,2 @@
+export const ACTION_ADD_NOTE = "ACTION_ADD_NOTE";
+export const ACTION_UPDATE_NOTE = "ACTION_UPDATE_NOTE";

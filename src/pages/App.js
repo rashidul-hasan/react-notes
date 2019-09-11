@@ -1,42 +1,53 @@
 import React from 'react';
 import uuid from "uuid";
-import { CSSTransitionGroup } from 'react-transition-group'
-import {ProgressBar} from "react-bootstrap";
 import RichTextEditor from 'react-rte';
-import { store, findAll } from '../lib/storage';
+import {connect} from "react-redux";
+import {addNote, updateNote} from "../redux/actionCreators";
 
 class App extends React.Component{
 
   state = {
-      notes: [],
-      progress: 0,
       note: RichTextEditor.createEmptyValue(),
       title: '',
       currentlyEditingNote: null
   }
 
   componentDidMount() {
-    const notes = findAll();
-    this.setState({notes});
+
   }
   
-  saveNote = () => {
-      const {title, note, currentlyEditingNote} = this.state;
-      const noteId = currentlyEditingNote ? currentlyEditingNote : uuid();
+  onSaveButtonPressed = () => {
+    this.state.currentlyEditingNote ? this.updateNote() : this.addNote();
+  }
 
-      const obj = {
-          title,
-          note: note.toString('html'),
-          id: noteId
-      };
+  addNote = () => {
+    const {title, note} = this.state;
+    const {addNote} = this.props;
+    const noteId = uuid();
 
-      store(obj);
+    addNote(noteId, title, note.toString('html'));
 
-      this.setState({
-          title: '',
-          note: RichTextEditor.createEmptyValue(),
-          currentlyEditingNote: null
-      });
+    this.resetFields();
+  }
+
+  updateNote = () => {
+    const {title, note, currentlyEditingNote} = this.state;
+
+    if(!currentlyEditingNote) return;
+
+    const {updateNote} = this.props;
+
+    updateNote(currentlyEditingNote, title, note.toString('html'));
+
+    this.resetFields();
+  }
+
+  resetFields = () => {
+    this.setState({
+        title: '',
+        note: RichTextEditor.createEmptyValue(),
+        currentlyEditingNote: null
+    });
   }
 
   onChange = (note) => {
@@ -45,25 +56,26 @@ class App extends React.Component{
 
   render() {
 
+    const notes = this.props.notes ? this.props.notes : [];
 
       return (
           <div className="App">
-              <div className="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto">
-                  <h3 className="display-4"></h3>
+              <div className="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+                  <h3 className="display-4">React NOTES</h3>
               </div>
 
               <div className="container">
 
                   <ul>
-                      {this.state.notes.map( i => {
+                      {notes.map( i => {
                           return (
                               <li onClick={() => {
                                   this.setState({
                                       title: i.title,
-                                      note: RichTextEditor.createValueFromString(i.note, 'html'),
+                                      note: RichTextEditor.createValueFromString(i.content, 'html'),
                                       currentlyEditingNote: i.id
                                   })
-                              }}>{i.title}</li>
+                              }} key={i.id}>{i.title}</li>
                           )
                       })}
                   </ul>
@@ -76,7 +88,7 @@ class App extends React.Component{
                       <input type="text" placeholder="title..." value={this.state.title}
                         onChange={(e) => this.setState({title: e.target.value})}/>
                       <div className="todo-wrap">
-                            <button onClick={this.saveNote}>+</button>
+                            <button onClick={this.onSaveButtonPressed}>+</button>
                       </div>
                   </div>
 
@@ -93,4 +105,10 @@ class App extends React.Component{
   
 }
 
-export default App;
+const mapStateToProps = (state) => {
+    return {
+        notes: state.notes
+    }
+}
+
+export default connect(mapStateToProps, {addNote, updateNote})(App);

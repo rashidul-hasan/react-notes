@@ -1,12 +1,15 @@
 const LOCAL_STORAGE_KEY = "notes";
 
 export function findAll() {
-    const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if( raw === null ){
+    try {
+        const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if( raw === null ){
+            return [];
+        }
+        return JSON.parse(raw);
+    } catch (err) {
         return [];
     }
-
-    return JSON.parse(raw);
 }
 
 export function store(note) {
