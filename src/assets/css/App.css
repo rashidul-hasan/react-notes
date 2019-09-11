@@ -1,0 +1,40 @@
+.strike-through { text-decoration: line-through; }
+.todo-wrap{ width: 400px; }
+
+.progress-container {
+	margin-bottom: 10px; 
+	transition: all .5s ease-in-out;
+}
+
+/* todo list */
+.todo-item {
+	font-family: 'Playfair Display', serif;
+	font-size: 14px;
+}
+.form-check {
+  padding-left: 0;
+}
+.form-check .btn.btn-link{
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-right: 0;
+}
+
+/* animation */
+.animate-enter {
+  opacity: 0.01;
+}
+
+.animate-enter.animate-enter-active {
+  opacity: 1;
+  transition: opacity 500ms ease-in;
+}
+
+.animate-leave {
+  opacity: 1;
+}
+
+.animate-leave.animate-leave-active {
+  opacity: 0.01;
+  transition: opacity 300ms ease-in;
+}
