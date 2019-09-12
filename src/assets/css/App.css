@@ -1,0 +1,16 @@
+.public-DraftEditor-content {
+    min-height: 300px;
+}
+.card:hover {
+    background-color: #f3f3f3;
+    cursor: pointer;
+}
+.card .card-link {
+    display: none;
+}
+.card:hover .card-link {
+    display: inline;
+}
+.card p.card-text {
+    margin-bottom: 0;
+}
